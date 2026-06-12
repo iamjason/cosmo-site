@@ -1,8 +1,8 @@
-# Molt
+# Cosmo
 
 **Shed the dead weight your dev tools no longer need.**
 
-This repo hosts Molt's website and downloads. Grab the latest notarized build
-from [Releases](https://github.com/iamjason/molt-site/releases/latest).
+This repo hosts Cosmo's website and downloads. Grab the latest notarized build
+from [Releases](https://github.com/iamjason/cosmo-site/releases/latest).
 
-Site: https://iamjason.github.io/molt-site/
+Site: https://iamjason.github.io/cosmo-site/
