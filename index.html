@@ -27,10 +27,7 @@
     line-height: 1.6;
     overflow-x: hidden;
   }
-  .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-  .star { position: absolute; background: #fff; animation: twinkle 3s infinite; image-rendering: pixelated; }
-  .star.gold { background: var(--gold); }
-  @keyframes twinkle { 0%,100% { opacity: .9 } 50% { opacity: .25 } }
+  .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; width: 100%; height: 100%; }
   main { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 24px; }
 
   .hero { text-align: center; padding: 72px 0 48px; }
@@ -92,7 +89,7 @@
 </style>
 </head>
 <body>
-<div class="stars" id="stars"></div>
+<canvas class="stars" id="stars"></canvas>
 <main>
   <section class="hero">
     <img class="cosmo" src="mascot/cosmo-hero.svg" alt="Cosmo, the pixel-art space tardigrade mascot">
@@ -108,8 +105,8 @@
   </section>
 
   <figure class="shot">
-    <img src="screenshot.png" alt="Cosmo finding 448 GB of reclaimable developer caches on a real Mac">
-    <figcaption>448 GB found on a real development Mac — every segment named, explained, and safe to review.</figcaption>
+    <img src="cosmo-demo.gif" alt="Cosmo walking across the window during a scan, then revealing 461 GB of reclaimable developer caches">
+    <figcaption>461 GB found on a real development Mac — Cosmo scans, you review, everything lands in the Trash.</figcaption>
   </figure>
 
   <h2 class="section">WHAT'S HIDING IN SYSTEM DATA</h2>
@@ -124,10 +121,10 @@
 
   <h2 class="section">EVERY TARGET, HONESTLY LABELED</h2>
   <div class="badges">
-    <span class="badge b-safe">SAFE</span>
-    <span class="badge b-quit">QUIT FIRST</span>
-    <span class="badge b-rebuild">REBUILDS</span>
-    <span class="badge b-destr">DESTRUCTIVE</span>
+    <span class="badge b-safe">Safe</span>
+    <span class="badge b-quit">Quit first</span>
+    <span class="badge b-rebuild">Rebuilds</span>
+    <span class="badge b-destr">Review</span>
   </div>
   <div class="grid">
     <div class="cell"><h3>Trash, not rm -rf</h3>
@@ -144,16 +141,63 @@
   </footer>
 </main>
 <script>
-  const field = document.getElementById('stars');
-  for (let i = 0; i < 70; i++) {
-    const s = document.createElement('div');
-    s.className = 'star' + (Math.random() < 0.15 ? ' gold' : '');
-    const size = Math.random() < 0.3 ? 4 : 3;
-    s.style.cssText = `left:${Math.random() * 100}vw;top:${Math.random() * 100}vh;` +
-      `width:${size}px;height:${size}px;animation-delay:${Math.random() * 3}s;` +
-      `opacity:${0.3 + Math.random() * 0.6}`;
-    field.appendChild(s);
+  // Warp-speed starfield: stars stream past, steering toward your cursor.
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  const COLORS = ['#ffffff', '#ffffff', '#ffffff', '#ffd166', '#b8a6e8', '#7de8c3'];
+  const COUNT = 220;
+  let stars = [], w = 0, h = 0;
+  // Flight direction drifts toward the mouse (normalized -1…1 from center).
+  let targetX = 0, targetY = 0, steerX = 0, steerY = 0;
+
+  function resize() {
+    w = canvas.width = innerWidth * devicePixelRatio;
+    h = canvas.height = innerHeight * devicePixelRatio;
   }
+  function spawn(star) {
+    star.x = (Math.random() - 0.5) * w * 2;
+    star.y = (Math.random() - 0.5) * h * 2;
+    star.z = Math.random() * 0.9 + 0.1;   // depth: 0 near, 1 far
+    star.color = COLORS[(Math.random() * COLORS.length) | 0];
+    return star;
+  }
+  function init() {
+    resize();
+    stars = Array.from({ length: COUNT }, () => spawn({}));
+  }
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  addEventListener('resize', init);
+  addEventListener('mousemove', (e) => {
+    targetX = (e.clientX / innerWidth - 0.5) * 2;
+    targetY = (e.clientY / innerHeight - 0.5) * 2;
+  });
+
+  function frame() {
+    steerX += (targetX - steerX) * 0.04;
+    steerY += (targetY - steerY) * 0.04;
+    ctx.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2;
+    for (const s of stars) {
+      // Approach: shrink depth; nearer stars move faster and drift with steer.
+      s.z -= 0.0022 * (reduced ? 0.25 : 1);
+      if (s.z <= 0.05) spawn(s).z = 1;
+      const k = 1 / s.z;
+      const px = cx + (s.x * k * 0.08) - steerX * (1 - s.z) * w * 0.10;
+      const py = cy + (s.y * k * 0.08) - steerY * (1 - s.z) * h * 0.10;
+      if (px < -8 || px > w + 8 || py < -8 || py > h + 8) { spawn(s).z = 1; continue; }
+      const size = Math.max(1.5, (1 - s.z) * 4.5) * devicePixelRatio;
+      ctx.globalAlpha = Math.min(1, (1 - s.z) * 1.6 + 0.15);
+      ctx.fillStyle = s.color;
+      // Square pixels, snapped — keeps the 8-bit feel.
+      ctx.fillRect(px | 0, py | 0, size | 0 || 1, size | 0 || 1);
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(frame);
+  }
+  init();
+  requestAnimationFrame(frame);
 </script>
 </body>
 </html>
