@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Molt — shed the dead weight your dev tools no longer need</title>
+<meta name="description" content="Free, open source Mac cleaner for developers. Find the Xcode, simulator, AI tool, and package manager caches hiding in System Data — and move them to Trash, safely.">
+<link rel="icon" type="image/svg+xml" href="mascot/cosmo-hero.svg">
+<style>
+  :root {
+    --navy: #131127;
+    --navy-2: #1b1830;
+    --lavender: #b8a6e8;
+    --shade: #9784cc;
+    --ice: #dff3ff;
+    --gold: #ffd166;
+    --mint: #7de8c3;
+    --pink: #ff9eae;
+    --text: #e8e4f5;
+    --dim: #9b94b8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .star { position: absolute; background: #fff; animation: twinkle 3s infinite; image-rendering: pixelated; }
+  .star.gold { background: var(--gold); }
+  @keyframes twinkle { 0%,100% { opacity: .9 } 50% { opacity: .25 } }
+  main { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+  .hero { text-align: center; padding: 72px 0 48px; }
+  .hero img.cosmo { width: 300px; max-width: 80vw; image-rendering: pixelated; }
+  h1 {
+    font-size: clamp(40px, 8vw, 72px);
+    letter-spacing: 4px;
+    color: var(--lavender);
+    text-shadow: 4px 4px 0 #241d3d;
+    margin-top: 8px;
+  }
+  .tagline { font-size: clamp(15px, 2.5vw, 19px); color: var(--text); margin: 10px 0 4px; }
+  .subtag { color: var(--dim); font-size: 14px; }
+  .subtag b { color: var(--mint); font-weight: 600; }
+
+  .buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin: 30px 0 8px; }
+  .btn {
+    display: inline-block; padding: 14px 26px; text-decoration: none;
+    font-family: inherit; font-size: 15px; font-weight: 700;
+    border: 3px solid var(--lavender); color: var(--lavender);
+    box-shadow: 5px 5px 0 #241d3d; transition: transform .08s, box-shadow .08s;
+  }
+  .btn.primary { background: var(--lavender); color: var(--navy); }
+  .btn:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 #241d3d; }
+  .note { color: var(--dim); font-size: 12px; margin-top: 14px; }
+
+  .shot { margin: 56px 0; text-align: center; }
+  .shot img {
+    width: 100%; max-width: 820px; border: 3px solid var(--navy-2);
+    box-shadow: 8px 8px 0 #0b0a18; border-radius: 10px;
+  }
+  .shot figcaption { color: var(--dim); font-size: 13px; margin-top: 12px; }
+
+  h2.section {
+    color: var(--gold); font-size: 22px; letter-spacing: 2px;
+    text-align: center; margin: 64px 0 28px;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+  .cell {
+    background: var(--navy-2); border: 2px solid #2a2547; padding: 22px;
+    box-shadow: 4px 4px 0 #0b0a18;
+  }
+  .cell h3 { color: var(--lavender); font-size: 16px; margin-bottom: 8px; }
+  .cell p { color: var(--dim); font-size: 13.5px; }
+  .cell .big { color: var(--mint); font-size: 28px; font-weight: 800; display: block; margin-bottom: 6px; }
+
+  .badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 22px 0; }
+  .badge { font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 99px; }
+  .b-safe { background: #143d2b; color: #5fe3a1; }
+  .b-quit { background: #3d3414; color: #e3c95f; }
+  .b-rebuild { background: #3d2714; color: #e3995f; }
+  .b-destr { background: #3d1419; color: #e35f6e; }
+
+  footer {
+    text-align: center; color: var(--dim); font-size: 13px;
+    padding: 72px 0 48px;
+  }
+  footer a { color: var(--lavender); }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<main>
+  <section class="hero">
+    <img class="cosmo" src="mascot/cosmo-hero.svg" alt="Cosmo, Molt's pixel-art space tardigrade mascot">
+    <h1>MOLT</h1>
+    <p class="tagline">Shed the dead weight your dev tools no longer need.</p>
+    <p class="subtag">The free, open source Mac cleaner for developers — guided by <b>Cosmo</b>,
+      a tardigrade who has survived worse than your full disk.</p>
+    <div class="buttons">
+      <a class="btn primary" href="https://github.com/iamjason/molt-site/releases/latest">↓ Download for Mac</a>
+      <a class="btn" href="https://github.com/iamjason/molt-site">View on GitHub</a>
+    </div>
+    <p class="note">macOS 26+ · free &amp; open source · no telemetry, no subscription, no upsell<br>
+      Unsigned beta build: right-click → Open the first time you launch it.</p>
+  </section>
+
+  <figure class="shot">
+    <img src="screenshot.png" alt="Molt finding 448 GB of reclaimable developer caches on a real Mac">
+    <figcaption>448 GB found on a real development Mac — every segment named, explained, and safe to review.</figcaption>
+  </figure>
+
+  <h2 class="section">WHAT'S HIDING IN SYSTEM DATA</h2>
+  <div class="grid">
+    <div class="cell"><span class="big">152</span><h3>cleanup targets</h3>
+      <p>Xcode DerivedData and device support, simulator runtimes, npm/pnpm/bun, Docker, Gradle, JetBrains — and your projects' node_modules, venvs, and Rust target dirs.</p></div>
+    <div class="cell"><span class="big">18</span><h3>categories</h3>
+      <p>Including the ones other cleaners miss: Claude Code, Cursor, Codex sessions, Ollama and LM Studio models, Hugging Face caches, Playwright browsers.</p></div>
+    <div class="cell"><span class="big">2</span><h3>ways to clean</h3>
+      <p>A native SwiftUI app with a clickable storage map, and a scriptable CLI: <code>molt scan --json</code>, <code>molt clean --all-safe</code>.</p></div>
+  </div>
+
+  <h2 class="section">EVERY TARGET, HONESTLY LABELED</h2>
+  <div class="badges">
+    <span class="badge b-safe">SAFE</span>
+    <span class="badge b-quit">QUIT FIRST</span>
+    <span class="badge b-rebuild">REBUILDS</span>
+    <span class="badge b-destr">DESTRUCTIVE</span>
+  </div>
+  <div class="grid">
+    <div class="cell"><h3>Trash, not rm -rf</h3>
+      <p>Everything goes to the Trash by default — restorable until you empty it. Permanent deletion is opt-in, and destructive items are never pre-selected.</p></div>
+    <div class="cell"><h3>Explained, not magic</h3>
+      <p>Every target says what it is and what happens after removal. Filter to things untouched for 30/60/90 days. Pick individual items, whole targets, or categories.</p></div>
+    <div class="cell"><h3>Guard rails everywhere</h3>
+      <p>The cleaner refuses paths outside your home, skips apps that are still running, and only flags project artifacts proven by their manifest — a folder named target without a Cargo.toml is left alone.</p></div>
+  </div>
+
+  <footer>
+    Made with care (and one very durable tardigrade) ·
+    <a href="https://github.com/iamjason/molt-site">github.com/iamjason/molt-site</a>
+  </footer>
+</main>
+<script>
+  const field = document.getElementById('stars');
+  for (let i = 0; i < 70; i++) {
+    const s = document.createElement('div');
+    s.className = 'star' + (Math.random() < 0.15 ? ' gold' : '');
+    const size = Math.random() < 0.3 ? 4 : 3;
+    s.style.cssText = `left:${Math.random() * 100}vw;top:${Math.random() * 100}vh;` +
+      `width:${size}px;height:${size}px;animation-delay:${Math.random() * 3}s;` +
+      `opacity:${0.3 + Math.random() * 0.6}`;
+    field.appendChild(s);
+  }
+</script>
+</body>
+</html>
