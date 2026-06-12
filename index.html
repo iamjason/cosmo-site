@@ -56,8 +56,9 @@
 
   .shot { margin: 56px 0; text-align: center; }
   .shot img {
-    width: 100%; max-width: 820px; border: 3px solid var(--navy-2);
-    box-shadow: 8px 8px 0 #0b0a18; border-radius: 10px;
+    width: 100%; max-width: 820px;
+    /* The capture carries its own window chrome — shadow follows its shape. */
+    filter: drop-shadow(0 14px 34px rgba(0, 0, 0, 0.55));
   }
   .shot figcaption { color: var(--dim); font-size: 13px; margin-top: 12px; }
 
@@ -135,7 +136,9 @@
   </div>
 
   <footer>
-    Made with care (and one very durable tardigrade).
+    Cosmo is a tardigrade — the most indestructible creature we know of.
+    Tardigrades molt, shrug off the vacuum of space, and can sleep for decades.
+    Yours just happens to clean disks.
   </footer>
 </main>
 <script>
